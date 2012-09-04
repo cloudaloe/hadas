@@ -1,6 +1,7 @@
 //use strict;
 
-require('./dataApi.js');
+var dataApi = require('./dataApi.js');
+require('./visualizer.js');
 var argv = require('optimist').argv;
 var fs = require('fs');
 var tokens = '';
@@ -15,7 +16,8 @@ tests.inPath = 'tests\\in\\';
 // this function is a preparation.
 // it's not finished as it doesn't compare output to desired output yet.
 // but the most part is already impelemented - namely places in the code that 
-// produce the test data when argv.test is true.
+// produce the test data when argv.test is true. Should be converted to comparing to 
+// a one-time created output.
 //
 function _tests()
 {	
@@ -32,7 +34,8 @@ function _tests()
 	//  console.log('failed opening test input file ' + tests.outPath);
 }
 
-if (argv.test) _tests();
+if (argv.test) 
+	_tests();
 else
 	console.log('running in regular mode...');
 
@@ -231,10 +234,6 @@ var joinTokens = function() {
   };
 }();
   
-//console.log(data);
-//tokens = tokenize(data);
-//console.log(tokens);
-
 function readFile(fileName)
 {
 	try 

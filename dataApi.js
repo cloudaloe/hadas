@@ -3,51 +3,56 @@
 //
 
 // stores a function name and the file defining it
-var storeFunc = function(name, file) 
+exports.storeFunc = function(name, file) 
 {
 	//return 'added'
 	//return 'already exists'
 };
 
-var getFileDefinedFuncs = function(file)
+exports.getFileDefinedFuncs = function(file)
 {
 	//return array of all function names defined in the file
 }
 
-var getAllFiles = function()
+exports.getAllFiles = function()
 {
 	//return array of all files
 }
 
-var getAllFuncs = function()
+exports.getAllFuncs = function()
 {
 	//return array of all function names
 }
 
-var getAllFiles = function()
-{
-	//return array of all file names
-}
-
-var findFunc = function(name) 
+exports.findFunc = function(name) 
 {	
 	//return file
 	//return 'not found'
 };
 
 // register name of source that calls this function
-var registerCall = function(file, name, callerFile)
+exports.registerCall = function(file, name, callerFile)
 {
 	//return null;
 	//call incrementUsageCount
 }
 
-var getUsageCount = function(file, name)
+exports.getCallersCount = function(file, name)
 {
-	//return usage count
+	//return callers count
 }
 
-var incrementUsageCount = function(file, name)
+exports.getCallers = function(file, name)
+{
+	//return callers count
+}
+
+exports.incrementUsageCount = function(file, name)
 {
 	 //return null;
+}
+
+exports.getFileTokensCount = function(file)
+{
+	//return number of tokens
 }
