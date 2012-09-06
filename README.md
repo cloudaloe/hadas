@@ -1,2 +1,4 @@
-hadas
-=====
+Hadas - the anti-IDE 
+====================
+
+
