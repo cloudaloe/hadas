@@ -13,8 +13,9 @@
 			}			
 		]
 	},
-	"doNotWatch_regex": [
-		"aa"
+	"doNotWatchDirs": [
+		".git",
+		"node_modules"
 	]
 }
 

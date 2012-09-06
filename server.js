@@ -3,6 +3,7 @@
 var nconf = require('nconf');
 var argv = require('optimist').argv;
 var fs = require('fs');
+var path = require('path');
 var tests = new Object();
 tests.outPath = 'tests\\out\\';
 tests.inPath = 'tests\\in\\';
@@ -24,40 +25,49 @@ nconf.argv()
      .file({ file: 'config/config.json' });
 
 var projectRoot = nconf.get('projectRoot');
+var doNotWatchDirs = nconf.get('doNotWatchDirs');
+console.log(JSON.stringify(doNotWatchDirs));
 	 
 if (argv.test) 
 	_tests();
 else
 	console.log('running in regular mode...');
 
-function recurseDirectories(projectRoot)
+function changeDetected(event, filename)
 {
-	files = fs.readdirSync(projectRoot)
-	files.forEach(function(file) {
-			var path = projectRoot + "\\" + file;
-			console.log('detected: ' + path);	
-			var _type = fs.statSync(path);
+	console.log('event: ' + event + ' on file ' + (filename || 'unknown'));
+}
+	
+function Watch(directory)
+{
+	containedEntities = fs.readdirSync(directory)
+	containedEntities.forEach(function(entity) {
+			var fullPath = directory + "\\" + entity;
+			var _type = fs.statSync(fullPath);
 			if (_type.isDirectory())
 			{
-				recurseDirectories(path);
+				if (doNotWatchDirs.indexOf(path.basename(fullPath)) == -1)
+				{
+					fs.watch(fullPath, {persistent: true, interval: 100}, changeDetected);
+					console.log('watching directory: ' + fullPath);						
+					Watch(fullPath);
+				}
+				else
+					console.log('not watching directory: ' + fullPath);	
 			}
 			else if (_type.isFile())
 			{
-				if (path.substr(-3) == '.js')
+				/*if (fullPath.substr(-3) == '.js')
 				{
 					var sourceFile = new Object();
-					sourceFile.file = path;
+					sourceFile.file = fullPath;
 					
-					//data = readFile(path);
+					//data = readFile(fullPath);
 					if (argv.test)
-						fs.writeSync(tests.functionDetectionOut, path + '\n');
-										
-					//console.log('source file details (as JSON):');
-					//console.log(JSON.stringify(sourceFile, null, 4))					
-					//project.push(sourceFile);					
+						fs.writeSync(tests.functionDetectionOut, fullPath + '\n');					
 				}
 				else
-					console.log('info: ' + path + ' contents ignored');
+					console.log('info: ' + fullPath + ' contents ignored');*/
 			}
 			else
 			{
@@ -66,5 +76,5 @@ function recurseDirectories(projectRoot)
 		});
 }
 
-recurseDirectories(projectRoot);
+Watch(projectRoot);
 //console.log(tokens);
