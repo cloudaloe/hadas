@@ -10,13 +10,14 @@ tests.inPath = 'tests\\in\\';
 var files;
 
 //
-// this function is a preparation.
+// setup configuration retreival and tests inits.
 // 
 function _tests()
 {	
+	// set the tests to run on a constant input project root included in this project.
 	console.log('running in test mode...');
 	projectRoot = 'tests\\in\\source';
-	if (!(tests.functionDetectionOut = fs.openSync(tests.outPath + 'functionDetection.out','w')))
+	if (!(tests.watch = fs.openSync(tests.outPath + 'watch.out','w')))
 		console.log('failed opening test output file ' + tests.outPath);
 }
 
@@ -26,7 +27,6 @@ nconf.argv()
 
 var projectRoot = nconf.get('projectRoot');
 var doNotWatchDirs = nconf.get('doNotWatchDirs');
-console.log(JSON.stringify(doNotWatchDirs));
 	 
 if (argv.test) 
 	_tests();
@@ -35,7 +35,7 @@ else
 
 function changeDetected(event, filename)
 {
-	console.log('event: ' + event + ' on file ' + (filename || 'unknown. Probably a watched file has been deleted.'));
+	console.log('fs.watch event: ' + event + ' on file ' + (filename || 'unknown. Probably a watched file has been deleted.'));
 }
 	
 function Watch(directory)
@@ -48,8 +48,8 @@ function Watch(directory)
 				if (doNotWatchDirs.indexOf(path.basename(directory)) == -1)
 				{
 					fs.watch(directory, {persistent: true, interval: 100}, changeDetected);
-					console.log('watching directory: ' + directory);						
-					
+					if (argv.test) 
+						fs.writeSync(tests.watch, 'watching directory: ' + directory + '\n');																
 					containedEntities = fs.readdirSync(directory)
 					containedEntities.forEach(function(element, index, array) {
 						array[index] = path.join(directory, array[index]);
@@ -65,7 +65,8 @@ function Watch(directory)
 					containedEntities.forEach(Watch);
 				}
 				else
-					console.log('not watching directory: ' + fullPath);	
+					if (argv.test) 
+					fs.writeSync(tests.watch, 'not watching directory: ' + fullPath + '\n');	
 			}
 			else if (_type.isFile())
 			{
@@ -76,7 +77,7 @@ function Watch(directory)
 					
 					//data = readFile(fullPath);
 					if (argv.test)
-						fs.writeSync(tests.functionDetectionOut, fullPath + '\n');					
+						fs.writeSync(tests.watch, fullPath + '\n');					
 				}
 				else
 					console.log('info: ' + fullPath + ' contents ignored');*/
