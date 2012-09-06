@@ -35,22 +35,34 @@ else
 
 function changeDetected(event, filename)
 {
-	console.log('event: ' + event + ' on file ' + (filename || 'unknown'));
+	console.log('event: ' + event + ' on file ' + (filename || 'unknown. Probably a watched file has been deleted.'));
 }
 	
 function Watch(directory)
 {
-	containedEntities = fs.readdirSync(directory)
-	containedEntities.forEach(function(entity) {
-			var fullPath = directory + "\\" + entity;
-			var _type = fs.statSync(fullPath);
+			var fullPath = directory;
+			
+			var _type = fs.statSync(directory);
 			if (_type.isDirectory())
 			{
-				if (doNotWatchDirs.indexOf(path.basename(fullPath)) == -1)
+				if (doNotWatchDirs.indexOf(path.basename(directory)) == -1)
 				{
-					fs.watch(fullPath, {persistent: true, interval: 100}, changeDetected);
-					console.log('watching directory: ' + fullPath);						
-					Watch(fullPath);
+					fs.watch(directory, {persistent: true, interval: 100}, changeDetected);
+					console.log('watching directory: ' + directory);						
+					
+					containedEntities = fs.readdirSync(directory)
+					containedEntities.forEach(function(element, index, array) {
+						array[index] = path.join(directory, array[index]);
+					});					
+					
+					//
+					// as long as relying on fs.watch for watching changes:
+					// fs.watch will only watch files in the root dir provided to it, 
+					// and subdirectories as a whole. it will not however watch changes 
+					// inside files included in subdirectories. 
+					// hence we need to recursively add all subdirectories for full watching.
+					//
+					containedEntities.forEach(Watch);
 				}
 				else
 					console.log('not watching directory: ' + fullPath);	
@@ -73,7 +85,6 @@ function Watch(directory)
 			{
 				throw "Object not detected as directory nor file";
 			}
-		});
 }
 
 Watch(projectRoot);
