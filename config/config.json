@@ -2,16 +2,7 @@
 	"projectRoot":			"C:\\Github\\hadas",
 	"projectClientSubDir": 	"client",
 	"run": {
-		"server": [
-			{
-				"invokeType": "cmd", 
-				"invokeName": "server.bat"
-			},
-			{
-				"invokeType": "cmd", 
-				"invokeName": "test.bat"
-			}			
-		]
+		"server": "server.js"
 	},
 	"doNotWatchDirs": [
 		".git",

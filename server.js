@@ -4,10 +4,12 @@ var nconf = require('nconf');
 var argv = require('optimist').argv;
 var fs = require('fs');
 var path = require('path');
+var spawn = require('child_process').spawn;		
 var tests = new Object();
 tests.outPath = 'tests\\out\\';
 tests.inPath = 'tests\\in\\';
 var files;
+var runner = null;
 
 //
 // setup configuration retreival and tests inits.
@@ -25,17 +27,43 @@ nconf.argv()
      .env()
      .file({ file: 'config/config.json' });
 
-var projectRoot = nconf.get('projectRoot');
-var doNotWatchDirs = nconf.get('doNotWatchDirs');
-	 
+var projectRoot 	= 	nconf.get('projectRoot');
+var doNotWatchDirs 	= 	nconf.get('doNotWatchDirs');
+var run 			= 	nconf.get('run');	
+	
 if (argv.test) 
 	_tests();
 else
 	console.log('running in regular mode...');
 
+function recycle()
+{
+	function spawnPlus()
+	{
+		console.log('starting the node side...');
+		runner = spawn('node',[run.server], { cwd: projectRoot});
+		console.log('...started node, pid is ' + runner.pid);
+		runner.on('exit', function(code, signal) {
+			// the kill signal brings us here assuming it caused the spawned process to exit
+			console.log('...node side stopped (pid = ' + this.pid + ', exit code = ' + code, ', signal = ' + signal +')');
+			spawnPlus();
+		})
+	}
+
+	if (!runner) // first time Hadas runs the project
+		spawnPlus();
+	else
+	{
+		console.log('stopping the node side...');	
+		runner.kill();
+	}
+}
+	
 function changeDetected(event, filename)
 {
 	console.log('fs.watch event: ' + event + ' on file ' + (filename || 'unknown. Probably a watched file has been deleted.'));
+	
+	recycle();
 }
 	
 function Watch(directory)
