@@ -1,11 +1,11 @@
 //var dataApi = require('./dataApi.js');
 //require('./visualizer.js');
+var nconf = require('nconf');
 var argv = require('optimist').argv;
 var fs = require('fs');
 var tests = new Object();
 tests.outPath = 'tests\\out\\';
 tests.inPath = 'tests\\in\\';
-var sourceRoot='source';
 var files;
 
 //
@@ -14,21 +14,27 @@ var files;
 function _tests()
 {	
 	console.log('running in test mode...');
-	sourceRoot = 'tests\\in\\source';
+	projectRoot = 'tests\\in\\source';
 	if (!(tests.functionDetectionOut = fs.openSync(tests.outPath + 'functionDetection.out','w')))
 		console.log('failed opening test output file ' + tests.outPath);
 }
 
+nconf.argv()
+     .env()
+     .file({ file: 'config/config.json' });
+
+var projectRoot = nconf.get('projectRoot');
+	 
 if (argv.test) 
 	_tests();
 else
 	console.log('running in regular mode...');
 
-function recurseDirectories(sourceRoot)
+function recurseDirectories(projectRoot)
 {
-	files = fs.readdirSync(sourceRoot)
+	files = fs.readdirSync(projectRoot)
 	files.forEach(function(file) {
-			var path = sourceRoot + "\\" + file;
+			var path = projectRoot + "\\" + file;
 			console.log('detected: ' + path);	
 			var _type = fs.statSync(path);
 			if (_type.isDirectory())
@@ -60,5 +66,5 @@ function recurseDirectories(sourceRoot)
 		});
 }
 
-recurseDirectories(sourceRoot);
+recurseDirectories(projectRoot);
 //console.log(tokens);

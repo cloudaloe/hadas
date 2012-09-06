@@ -1,0 +1,20 @@
+{
+	"projectRoot":			"C:\\Github\\hadas",
+	"projectClientSubDir": 	"client",
+	"run": {
+		"server": [
+			{
+				"invokeType": "cmd", 
+				"invokeName": "server.bat"
+			},
+			{
+				"invokeType": "cmd", 
+				"invokeName": "test.bat"
+			}			
+		]
+	},
+	"doNotWatch_regex": [
+		"aa"
+	]
+}
+
