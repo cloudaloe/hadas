@@ -9,7 +9,9 @@ tests.outPath = 'tests\\out\\';
 tests.inPath = 'tests\\in\\';
 var files;
 var runner = null;
-var watchActive = false;
+var watchActive = { nodeSide: false,
+					clientSide: true }
+var projectClients = new Array();
 
 var nconf = require('nconf'); 
 nconf.file({ file: 'config/config.json'});
@@ -44,13 +46,11 @@ if (argv.test)
 else
 	console.log('running in regular mode...');
 	
-if (watchActive)
+if (watchActive.nodeSide)
 	console.log('watch active');
 else
 	console.log('watch inactive');
 
-	
-//var cipher = crypto.createCipher('aes256', 'my-password');
 var static = require('node-static'); 
 staticContentServer = new static.Server('./client', { cache: false });
 
@@ -61,37 +61,48 @@ var port = nconf.get('server:port');
 app.listen(port);
 
 io.sockets.on('connection', function (socket) {
+	// 
+	// for now, we send all messages to both client types (Hadas client and actual project client)
+	// obviously that has to be changed into cleanly communicating with each of the two types
+	// each type has to identify it's semantic type as it first connects
+	//
+	
 	socket.emit('agentStatus', (runner != null));
-	socket.emit('watchStatus', watchActive);	
+	socket.emit('watchStatus', watchActive.nodeSide);	
+	
 	socket.on('runNow', function (clientObject) {
 		if (runner) 
 		{ 
-			console.log('Run request received from UI, but the node side is already running.') 
+			console.log('Run request received from UI, but the node side is already running') 
 		}
 		else
 		{
-			console.log("Run request received from UI. Params: " + clientObject.runParams + ".");
+			console.log("Run request received from UI. Params: " + clientObject.runParams);
 			spawnPlus();
 		}
 	});
 	
 	socket.on('pause', function (clientObject) {
-		console.log('Request to pause the recycle watch received from the UI.');
-		console.log('Pausing the recycle watch.');
-		watchActive = false;
+		console.log('request to pause the recycle watch received from the UI');
+		console.log('pausing the recycle watch.');
+		watchActive.nodeSide = false;
 	});
 	socket.on('resume', function (clientObject) {
-		console.log('Request to enable the recycle watch received from the UI.');
-		console.log('Enabling the recycle watch.');		
-		watchActive = true;		
+		console.log('request to enable the recycle watch received from the UI');
+		console.log('enabling the recycle watch.');		
+		watchActive.nodeSide = true;		
 	});
+	socket.on('projectClient', function (clientObject) {
+		console.log('project client side has registered');
+		projectClients.push(clientObject); 
+	});	
 });
 
 //try later to incorporate this library
 //var nodetime = require('nodetime');
 //nodetime.profile();
 
-console.log('Hadas started - watch its UI on http://localhost:' + port + '.');
+console.log('Hadas started - its UI available at http://localhost:' + port);
 		
 function handler(request, response) {
 	console.log('Received request - method: ' + request.method + ' url: ' + request.url);
@@ -134,9 +145,8 @@ function spawnPlus()
 		spawnPlus();
 	})
 }
-
 	
-function recycle()
+function recycleNode()
 {
 	console.log('stopping the node side...');	
 	if (runner)
@@ -147,14 +157,27 @@ function recycle()
 	
 function changeDetected(event, filename)
 {
-	console.log('fs.watch event: ' + event + ' on file ' + (filename || 'unknown. Probably a watched file has been deleted.'));
-	if (watchActive) 
+	console.log('fs.watch event: ' + event + ' on file ' + (filename || 'unknown. Probably a watched file has been deleted'));
+	if (watchActive.nodeSide) 
 	{
 		console.log('recycling the node side');	
-		recycle();
+		recycleNode();
 	}
 	else 
-		console.log('watch paused - no action taken.');		
+		console.log('watch paused for node side - no action taken');		
+	
+	//
+	// this sequence assumes the server is up by the time the client refreshes,
+	// as recycling the node side is synchronous
+	//
+	
+	if (watchActive.clientSide)
+	{
+		console.log('recycling the client side');	
+		io.sockets.emit('clientRecycle', true);
+	}
+	else 
+		console.log('watch paused for client side - no action taken');		
 }
 	
 function watch(directory)
