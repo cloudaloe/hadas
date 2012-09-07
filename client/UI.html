@@ -8,52 +8,76 @@
 	<script type="text/javascript" src="jquery/js/jquery-ui-1.8.22.custom.min.js"></script>
 		
   </head>
-
   
   <body>
   	<div><button id=runNow onClick="runNow()">Run now</button></div>
-	<div><button id=pause onClick="pause()">Pause</button></div>
-	<div>Agent status: <strong data-bind="text: agentStatusText"></strong></div>
+	<div><button id=watchToggle onClick="watchToggle()"></button></div>
+	<div>Node side status: <strong data-bind="text: agentStatusText"></strong></div>
 	<br>
-	<div><p>Agent progress:</p><p data-bind="text: agentStdout"></p></div>
+	<div><p>Console output:</p><p data-bind="text: agentStdout"></p></div>
   </body>
 
   <script>
-	$('#runNow').button();
-	$('#pause').button();	
-	var socket = io.connect('http://localhost:1337');
+		$('#runNow').button();
+		$('#watchToggle').button();	
+		var watch;
+		var relayedStdout='';
 		
-	socket.on('agentStatus', function (SRVagentStatus) {
-		//alert('got agentStatus message: ' + SRVagentStatus);
-		if (SRVagentStatus) { myViewModel.agentStatusText('currently running') }
-		else { myViewModel.agentStatusText('not currently running') }
-	});
-	
-	socket.on('agentStdout', function (data) {
-		{ myViewModel.agentStdout(data) }
-	});
+		function setWatchToggleButton()
+		{
+			if (watch)
+				$('#watchToggle').button('option', 'label', 'Disable automatic watch');
+			else
+				$('#watchToggle').button('option', 'label', 'Enable automatic watch');
+		}
 		
-	// Create some observables, and bind them to the page (all with knockout.js).
-	var myViewModel = {
-		agentStatusText: ko.observable('getting agent status...'),
-		agentStdout: ko.observable('')
-	} 
-	ko.applyBindings(myViewModel); 
-					
-	function runNow() { 
-		//myViewModel.agentStatusText('run request sent');
-		socket.emit('runNow', { runParams: 'none' });
-	};
-	
-	function pause() { 
-		//myViewModel.agentStatusText('pause request sent');
-		socket.emit('pause', { runParams: 'none' });
-	};
-	
-	function resume() { 
-		//myViewModel.agentStatusText('pause request sent');
-		socket.emit('resume', { runParams: 'none' });
-	};
-	
-  </script>
+		var socket = io.connect('http://localhost:1337');
+			
+		socket.on('agentStatus', function (SRVagentStatus) {
+			//alert('got agentStatus message: ' + SRVagentStatus);
+			if (SRVagentStatus) { myViewModel.agentStatusText('running') }
+			else { myViewModel.agentStatusText('not running') }
+		});
+		
+		socket.on('watchStatus', function(status) {
+			watch = status;
+			setWatchToggleButton();
+		});
+		
+		socket.on('agentStdout', function (data) {
+			{ 
+				relayedStdout += data;
+				myViewModel.agentStdout(relayedStdout) 
+				
+			}
+		});
+			
+		// Create some observables, and bind them to the page (all with knockout.js).
+		var myViewModel = {
+			agentStatusText: ko.observable('getting status...'),
+			agentStdout: ko.observable(relayedStdout)
+		} 
+		ko.applyBindings(myViewModel); 
+						
+		function runNow() { 
+			//myViewModel.agentStatusText('run request sent');
+			socket.emit('runNow', { runParams: 'none' });
+		};
+		
+		function watchToggle() { 
+			//myViewModel.agentStatusText('pause request sent');
+			if (watch)
+			{
+				socket.emit('pause', { runParams: 'none' });
+				watch = false;
+			}
+			else
+			{
+				socket.emit('resume', { runParams: 'none' });	
+				watch = true;
+			}
+		setWatchToggleButton();		
+		};
+		
+	</script>
 </html>
