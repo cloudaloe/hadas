@@ -1,5 +1,21 @@
 body {
-	background-color: #3a3a3a;
+	background-color: #F4F4F47;
+    font-family: Helvetica, Arial, Sans-serif;
+    font-size:0.75em;
+}
+
+#Console {
+	width: 80%;
+	height: 60%;
+	position: relative;	
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 10%;
+	margin-bottom: 20%;
+	border: 2px solid rgb(240,240,240);		
+	border-radius: 7px;
+	padding: 2em;
+	background-color: #f1efe9;
 }
 
 #questionContainer {
@@ -31,26 +47,4 @@ body {
 	color: #BBB;
 }
 
-#chartSpace {
-	width: 80%;
-	height: 60%;
-	position: relative;	
-	margin-left: auto;
-	margin-right: auto;
-	margin-top: 10%;
-	margin-bottom: 20%;
-	border: 1px solid rgb(200,200,200);		
-	border-radius: 7px;
-	padding: 2em;
-	background-color: #f0eee9;
-}
 
-path {
-    stroke: green;
-    stroke-width: 2;
-    fill: none;
-}
- 
-line {
-    stroke: black;
-}

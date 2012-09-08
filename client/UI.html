@@ -3,6 +3,7 @@
   <head>
     <script src="/socket.io/socket.io.js"></script>
 	<script type='text/javascript' src='knockout-2.1.0.js'></script>
+	<link type="text/css" rel="stylesheet" href="./css.css">	
 	<link type="text/css" href="jquery/css/le-frog/jquery-ui-1.8.22.custom.css" rel="stylesheet" />
 	<script type="text/javascript" src="jquery/js/jquery-1.7.2.min.js"></script>
 	<script type="text/javascript" src="jquery/js/jquery-ui-1.8.22.custom.min.js"></script>
@@ -13,8 +14,11 @@
   	<div><button id=runNow onClick="runNow()">Run now</button></div>
 	<div><button id=watchToggle onClick="watchToggle()"></button></div>
 	<div>Node side status: <strong data-bind="text: agentStatusText"></strong></div>
-	<br>
-	<div><p>Console output:</p><p data-bind="text: agentStdout"></p></div>
+	<div id="Console">
+		<p>Console output:</p>
+		<div id="ConsoleStdout" style="height:400px; overflow:auto;" data-bind="text: agentStdout"></div>
+	</div>	
+	<!--div id="Console"></div-->
   </body>
 
   <script>
@@ -35,9 +39,20 @@
 			
 		socket.on('agentStatus', function (SRVagentStatus) {
 			//alert('got agentStatus message: ' + SRVagentStatus);
-			if (SRVagentStatus) { myViewModel.agentStatusText('running') }
-			else { myViewModel.agentStatusText('not running') }
+			if (SRVagentStatus) 
+			{ 
+				myViewModel.agentStatusText('running') 
+			}
+			else 
+			{ 
+				myViewModel.agentStatusText('not running') 
+			}
 		});
+		
+		socket.on('agentStarted', function () {
+			//relayedStdout += 'Node started...\n';			
+		});
+		
 		
 		socket.on('watchStatus', function(status) {
 			watch = status;
@@ -46,9 +61,21 @@
 		
 		socket.on('agentStdout', function (data) {
 			{ 
+				// append stdout and scroll to bottom of stdout display			
 				relayedStdout += data;
 				myViewModel.agentStdout(relayedStdout) 
-				
+				objDiv = document.getElementById("ConsoleStdout");
+				objDiv.scrollTop = objDiv.scrollHeight;		
+			}
+		});
+		
+		socket.on('agentStderr', function (data) {
+			{ 
+				// append stdout and scroll to bottom of stdout display			
+				relayedStdout += 'Stderr: ' + data;
+				myViewModel.agentStdout(relayedStdout) 
+				objDiv = document.getElementById("ConsoleStdout");
+				objDiv.scrollTop = objDiv.scrollHeight;		
 			}
 		});
 			

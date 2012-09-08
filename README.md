@@ -28,6 +28,11 @@ Start Hadas by locating to the root directory and run: <br/>
 `node hadas.js` (or on Windows, run hadas.bat) <br/>
 The UI will then become available
 
+## License
+
+Distributed under the Eclipse Public License 1.0
+Copyright © 2012 Matan Safriel.
+
 ## Stability status
 
 This is work in progress

@@ -9,7 +9,7 @@ tests.outPath = 'tests\\out\\';
 tests.inPath = 'tests\\in\\';
 var files;
 var runner = null;
-var watchActive = { nodeSide: false,
+var watchActive = { nodeSide: true,
 					clientSide: true }
 var projectClients = new Array();
 
@@ -86,11 +86,13 @@ io.sockets.on('connection', function (socket) {
 		console.log('request to pause the recycle watch received from the UI');
 		console.log('pausing the recycle watch.');
 		watchActive.nodeSide = false;
+		watchActive.clientSide = false;		
 	});
 	socket.on('resume', function (clientObject) {
 		console.log('request to enable the recycle watch received from the UI');
 		console.log('enabling the recycle watch.');		
 		watchActive.nodeSide = true;		
+		watchActive.clientSide = true;				
 	});
 	socket.on('projectClient', function (clientObject) {
 		console.log('project client side has registered');
@@ -136,6 +138,7 @@ function spawnPlus()
 	runner.stdout.on('data', function (data) { io.sockets.emit('agentStdout', String(data)) });	
 	runner.stderr.on('data', function (data) { io.sockets.emit('agentStderr', String(data)) });	
 	io.sockets.emit('agentStatus', true);
+	io.sockets.emit('agentStarted');	
 	
 	console.log('...started node, pid is ' + runner.pid);
 	runner.on('exit', function(code, signal) {
