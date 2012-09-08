@@ -1,5 +1,4 @@
 //var watch = require('./watch.js');
-
 var argv = require('optimist').argv;
 var fs = require('fs');
 var path = require('path');
@@ -158,29 +157,38 @@ function recycleNode()
 		spawnPlus();
 }
 	
+
 function changeDetected(event, filename)
 {
-	console.log('fs.watch event: ' + event + ' on file ' + (filename || 'unknown. Probably a watched file has been deleted'));
-	if (watchActive.nodeSide) 
-	{
-		console.log('recycling the node side');	
-		recycleNode();
-	}
-	else 
-		console.log('watch paused for node side - no action taken');		
-	
 	//
-	// this sequence assumes the server is up by the time the client refreshes,
-	// as recycling the node side is synchronous
-	//
-	
-	if (watchActive.clientSide)
+	// Using just one listener for all fs.watch event callbacks, 
+	// ignore any directory and file that match an ignore name
+	// 
+	if (doNotWatchDirs.indexOf(filename) == -1)
 	{
-		console.log('recycling the client side');	
-		io.sockets.emit('clientRecycle', true);
+		console.log('fs.watch event: ' + event + ' on file ' + (filename || 'unknown. Probably a watched file has been deleted'));
+		if (watchActive.nodeSide) 
+		{
+			console.log('recycling the node side');	
+			recycleNode();
+		}
+		else 
+			console.log('watch paused for node side - no action taken');		
+		
+		//
+		// this sequence assumes the server is up by the time the client refreshes,
+		// as recycling the node side is synchronous
+		//
+		
+		if (watchActive.clientSide)
+		{
+			console.log('recycling the client side');	
+			io.sockets.emit('clientRecycle', true);
+		}
+		else 
+			console.log('watch paused for client side - no action taken');		
+
 	}
-	else 
-		console.log('watch paused for client side - no action taken');		
 }
 	
 function watch(directory)
@@ -190,15 +198,19 @@ function watch(directory)
 			var _type = fs.statSync(directory);
 			if (_type.isDirectory())
 			{
+				//
+				// Using just one listener for all fs.watch event callbacks, 
+				// ignore any directory and file that match an ignore name
+				// 
 				if (doNotWatchDirs.indexOf(path.basename(directory)) == -1)
 				{
 					fs.watch(directory, {persistent: true, interval: 100}, changeDetected);
 					if (argv.test) 
 						fs.writeSync(tests.watch, 'watching directory: ' + directory + '\n');																
-					containedEntities = fs.readdirSync(directory)
-					containedEntities.forEach(function(element, index, array) {
-						array[index] = path.join(directory, array[index]);
-					});					
+						containedEntities = fs.readdirSync(directory)
+						containedEntities.forEach(function(element, index, array) {
+							array[index] = path.join(directory, array[index]);
+						});					
 					
 					//
 					// as long as relying on fs.watch for watching changes:
@@ -211,7 +223,7 @@ function watch(directory)
 				}
 				else
 					if (argv.test) 
-					fs.writeSync(tests.watch, 'not watching directory: ' + fullPath + '\n');	
+						fs.writeSync(tests.watch, 'not watching directory: ' + fullPath + '\n');	
 			}
 			else if (_type.isFile())
 			{
