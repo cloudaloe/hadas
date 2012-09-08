@@ -84,11 +84,10 @@ exports.a = a;
 // This is opposed to node.js that will load just one file and will work through the 'require' directive for knowing what else to load and use.
 // There's one or more packages for browser-side modularization, one from Google I think, see 
 // http://stackoverflow.com/questions/6226894/how-to-split-javascript-code-into-multiple-files-and-use-them-without-including
-// or others that safeguard order. 
-// 
-// Sharing stuff between source files requires manually simulating a shared context, such as in
+// or others that safeguard order like Require.JS or other ways, discussed here -
+// http://stackoverflow.com/questions/950087/include-javascript-file-inside-javascript-file
 // http://stackoverflow.com/questions/5271663/sharing-a-js-functions-between-code-in-2-files
-//
+// 
 
 //
 // Some of the source code here was adapted from http://www.crockford.com/javascript/inheritance.html;

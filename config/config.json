@@ -1,6 +1,5 @@
 {
-	"projectRoot":			"C:\\Github\\chart",
-	"projectClientSubDir": 	"client",
+	"projectRoot": "C:\\Github\\chart",
 	"run": {
 		"server": "server.js"
 	},
