@@ -1,5 +1,6 @@
 //var watch = require('./watch.js');
 var argv = require('optimist').argv;
+var configFile = 'config/config.json';
 var fs = require('fs');
 var path = require('path');
 var spawn = require('child_process').spawn;		
@@ -13,7 +14,7 @@ var watchActive = { nodeSide: true,
 var projectClients = new Array();
 
 var nconf = require('nconf'); 
-nconf.file({ file: 'config/config.json'});
+nconf.file({ file: configFile});
 var agentIntervalSeconds = nconf.get('agentIntervalSeconds');
 var app = require('http').createServer(handler)
 var io = require('socket.io').listen(app)
@@ -32,9 +33,7 @@ function _tests()
 		console.log('failed opening test output file ' + tests.outPath);
 }
 
-nconf.argv()
-     .env()
-     .file({ file: 'config/config.json' });
+nconf.file({ file: 'config/config.json' });
 
 var projectRoot 	= 	nconf.get('projectRoot');
 var doNotWatchDirs 	= 	nconf.get('doNotWatchDirs');
@@ -50,6 +49,8 @@ if (watchActive.nodeSide)
 else
 	console.log('watch inactive');
 
+console.log('configuration is taken from ' + path.join(__dirname, configFile));
+	
 var static = require('node-static'); 
 staticContentServer = new static.Server('./UI', { cache: false });
 
@@ -68,7 +69,7 @@ io.sockets.on('connection', function (socket) {
 	
 	socket.emit('agentStatus', (runner != null));
 	socket.emit('watchStatus', watchActive.nodeSide);	
-	
+		
 	socket.on('runNow', function (clientObject) {
 		if (runner) 
 		{ 
