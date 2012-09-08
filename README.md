@@ -9,19 +9,25 @@ is running and serving its node console.
 
 1. Download the code
 2. Configure config/config.json to monitor your project 
-3. In your project's client-side code directory, copy the following files into /lib:
-   <code>hadasClientListener.js</code>
-   <code>socket.io.js</code>
-4. In your project's html, add the following line, after jquery.
-   <code><script type='text/javascript' src='./lib/hadasClientListener.js'></script></code>
-   It assumes your html first loads jquery.
+3. In your project's client-side code directory, <br/> 
+   copy the following files into /lib:
+   `hadasClientListener.js`
+   `socket.io.js`
+4. In your project's html, add the following line, after jquery
+   `<script type='text/javascript' src='./lib/hadasClientListener.js'></script>` <br/>
+   It assumes your html first loads jquery
 
-#### Setup effort summary:
-Configuration parameters to set: 	2 - 5
-Moving around files:				2
-Code change to your project:		1
+#### Current setup effort summary:
+Configuration parameters to set: 	2 - 5 <br/>
+Moving around files:				2 <br/>
+Code change to your project:		1 
 
 ## Usage
 
-Start Hadas by locating to the root directory and run: <code>node hadas.js</code> (or on Windows, run hadas.bat).
-The UI will then become available.
+Start Hadas by locating to the root directory and run: <br/> 
+`node hadas.js` (or on Windows, run hadas.bat) <br/>
+The UI will then become available
+
+## Stability status
+
+This is work in progress
