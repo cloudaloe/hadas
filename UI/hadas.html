@@ -4,17 +4,18 @@
     <script src="/socket.io/socket.io.js"></script>
 	<script type='text/javascript' src='knockout-2.1.0.js'></script>
 	<link type="text/css" rel="stylesheet" href="./css.css">	
-	<link type="text/css" href="jquery/css/le-frog/jquery-ui-1.8.22.custom.css" rel="stylesheet" />
-	<script type="text/javascript" src="jquery/js/jquery-1.7.2.min.js"></script>
-	<script type="text/javascript" src="jquery/js/jquery-ui-1.8.22.custom.min.js"></script>
+	<link type="text/css" href="jquery/css/custom-theme/jquery-ui-1.8.23.custom.css" rel="stylesheet" />
+	<script type="text/javascript" src="jquery/js/jquery-1.8.0.min.js"></script>
+	<script type="text/javascript" src="jquery/js/jquery-ui-1.8.23.custom.min.js"></script>
 		
   </head>
   
   <body>
 	<div>Node side status: <strong data-bind="text: agentStatusText"></strong></div>  
-  	<div id=runNow style="visibility: hidden;" onClick="runNow()">Run now</div>
+  	<div id=runNow style="visibility: visible;" onClick="runNow()">Run now</div>
 	
 	<div id=watchToggle style="visibility: hidden;">
+		<p style="color:#c1bfb9; margin-bottom:0.5em">auto recycle</p>
 		<input type="radio" id="watchToggleOn" name="radio" />
 		<label for="watchToggleOn">ON</label>
 		<input type="radio" id="watchToggleOff" name="radio" />
@@ -22,8 +23,8 @@
 	</div>
 		
 	<div id="Console">
-		<p>Console output:</p>
-		<div id="ConsoleStdout" style="height:250px; overflow:auto;" data-bind="text: agentStdout"></div>
+		<p style="margin-top:0em">Console output:</p>
+		<div id="ConsoleStdout" style="overflow:auto;" data-bind="text: agentStdout"></div>
 	</div>	
 	<!--div id="Console"></div-->
   </body>
@@ -35,6 +36,20 @@
 		var watch;
 		var relayedStdout='';
 		
+		//
+		// the following line roughly makes the height of the console display area such 
+		// that it ends near the bottom of the entire window. In order that it uses
+		// as much real estate as is available without creating a vertical 
+		// window scroll bar
+		//
+		// the calculation is a bit rough (as it doesn't account for the size of the padding 
+		// and margin of its div) but ends up working well on all tested window sizes.
+		// if it's needed to refine more, then one needs to account for sizes of margin,
+		// padding, etc, unless a more direct browser metric is available. Possibly by following from
+		// http://stackoverflow.com/questions/590602/padding-or-margin-value-in-pixels-as-integer-using-jquery
+		//
+		$('#Console').height($(document).height() - $('#Console').offset().top - 68);
+				
 		function watchToggle()
 		{
 			switch(this.id)
@@ -73,12 +88,14 @@
 			if (SRVagentStatus) 
 			{ 
 				myViewModel.agentStatusText('running') 
-				document.getElementById('runNow').style.visibility='hidden';							
+				//document.getElementById('runNow').style.visibility='hidden';							
+				$('#runNow').button( "option" , 'label' , 'Recycle Now' );
 			}
 			else 
 			{ 
 				myViewModel.agentStatusText('not running') 
-				document.getElementById('runNow').style.visibility='visible';							
+				//document.getElementById('runNow').style.visibility='visible';							
+				$('#runNow').button( "option" , 'label' , 'Run Now' );				
 			}
 		});
 		
