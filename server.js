@@ -52,7 +52,7 @@ else
 	console.log('watch inactive');
 
 var static = require('node-static'); 
-staticContentServer = new static.Server('./client', { cache: false });
+staticContentServer = new static.Server('./UI', { cache: false });
 
 //
 // Must add thorough error handling here
@@ -104,7 +104,7 @@ io.sockets.on('connection', function (socket) {
 //var nodetime = require('nodetime');
 //nodetime.profile();
 
-console.log('Hadas started - its UI available at http://localhost:' + port);
+console.log('Hadas started - its UI served at http://localhost:' + port + '/hadas.html');
 		
 function handler(request, response) {
 	console.log('Received request - method: ' + request.method + ' url: ' + request.url);
