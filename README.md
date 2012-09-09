@@ -2,7 +2,7 @@
 
 Takes care of your project reloading, once you change your code. Be agile.
 It recycles both the node side and your open browser side, once your project changes (e.g. when you save or move a file).
-An html user interface governs the enabling and disabling of this automatic recycling, as well as showing whether the project 
+An html user interface governs enabling and disabling, as well as showing whether the project 
 is running and serving its node console.
 
 ## Current setup effort summary:
@@ -24,7 +24,7 @@ Code change to your project:		1
 
 ## Usage after setup
 
-Start Hadas by locating to the root directory and run: `node hadas.js` (or on Windows, run hadas.bat) <br/>
+Start Hadas by locating to the root directory and run: `node hadas.js` (or on Windows, run `hadas.bat`) <br/>
 The UI will then become available
 
 ## Stability status
@@ -41,7 +41,17 @@ Post your ideas in the Wiki or fork / take away pieces.
 ## Inspiration and acknowledgements
 
 This was inspired by a general disenchantment with how IDE's are designed. <br/>
-I found no existing project doing this, so I made this. Lightly inspired by [Light Table] (http://www.chris-granger.com/2012/04/12/light-table---a-new-ide-concept/). The code was partly inspired by [Andrew Davey's vogue code] (https://github.com/andrewdavey/vogue). 
+I found no existing project doing this, so I made this. Lightly inspired by [Light Table] (http://www.chris-granger.com/2012/04/12/light-table---a-new-ide-concept/). <br/> The code was partly inspired by [Andrew Davey's vogue code] (https://github.com/andrewdavey/vogue). 
+
+Uses:
+* Node.js
+* jQuery
+* jQuery UI
+* Knockout.js
+* Node.js nconf module
+* Node.js optimist module
+* Node.js node-static module
+* Node.js socket.io module
 
 ## License
 
