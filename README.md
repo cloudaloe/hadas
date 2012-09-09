@@ -5,6 +5,11 @@ It recycles both the node side and your open browser side, once your project cha
 An html user interface governs the enabling and disabling of this automatic recycling, as well as showing whether the project 
 is running and serving its node console.
 
+## Current setup effort summary:
+Configuration parameters to set: 	2 - 5 <br/>
+Moving around files:				2 <br/>
+Code change to your project:		1 
+
 ## Setup
 
 1. Download the code
@@ -13,26 +18,31 @@ is running and serving its node console.
    copy the following files into /lib:
    `hadasClientListener.js`
    `socket.io.js`
-4. In your project's html, add the following line, after jquery
+4. In your project's html, add the following line, after jquery <br/>
    `<script type='text/javascript' src='./lib/hadasClientListener.js'></script>` <br/>
    It assumes your html first loads jquery
 
-#### Current setup effort summary:
-Configuration parameters to set: 	2 - 5 <br/>
-Moving around files:				2 <br/>
-Code change to your project:		1 
+## Usage after setup
 
-## Usage
-
-Start Hadas by locating to the root directory and run: <br/> 
-`node hadas.js` (or on Windows, run hadas.bat) <br/>
+Start Hadas by locating to the root directory and run: `node hadas.js` (or on Windows, run hadas.bat) <br/>
 The UI will then become available
-
-## License
-
-Distributed under the Eclipse Public License 1.0
-Copyright © 2012 Matan Safriel.
 
 ## Stability status
 
-This is work in progress
+This is work in progress. It works 'on my machine'.
+It probably needs some fixing for Unix and non-Chrome.
+
+## Welcome contributions
+
+This is a user experience centric tool. <br/>
+Any contribution must maintain a cool UI. <br/>
+Post your ideas in the Wiki or fork / take away pieces.
+
+## Inspiration and acknowledgements
+
+This was inspired by a general disenchantment with how IDE's are designed. <br/>
+I found no existing project doing this, so I made this. Lightly inspired by [Light Table] (http://www.chris-granger.com/2012/04/12/light-table---a-new-ide-concept/). The code was partly inspired by [Andrew Davey's vogue code] (https://github.com/andrewdavey/vogue). 
+
+## License
+
+Need to consolidate and confirm compliance with dependencies, prior to publishing.
