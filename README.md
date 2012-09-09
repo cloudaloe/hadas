@@ -24,7 +24,7 @@ Code change to your project:		1
 
 ## Usage after setup
 
-Start Hadas by locating to the root directory and run: `node hadas.js` (or on Windows, run `hadas.bat`) <br/>
+Start Hadas by locating to the root directory and running: `node hadas.js` (or on Windows, run `hadas.bat`) <br/>
 The UI will then become available
 
 ## Stability status
@@ -56,3 +56,6 @@ Uses the following:
 ## License
 
 Need to consolidate and confirm compliance with dependencies, prior to publishing.
+
+Screenshot:
+![screenshot](https://github.com/cloudaloe/hadas/tree/master/screenshots/hadas.png)
