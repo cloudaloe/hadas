@@ -56,6 +56,3 @@ Uses the following:
 ## License
 
 Need to consolidate and confirm compliance with dependencies, prior to publishing.
-
-Screenshot:
-![screenshot](/cloudaloe/hadas/tree/master/screenshots/hadas.jpg)
