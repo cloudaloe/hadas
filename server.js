@@ -83,6 +83,9 @@ io.sockets.on('connection', function (socket) {
 		{
 			spawnPlus();
 		}
+		
+		console.log('recycling the client side');	
+		io.sockets.emit('clientRecycle', true);
 	});
 	
 	socket.on('pause', function (clientObject) {
@@ -102,10 +105,6 @@ io.sockets.on('connection', function (socket) {
 		projectClients.push(clientObject); 
 	});	
 });
-
-//try later to incorporate this library
-//var nodetime = require('nodetime');
-//nodetime.profile();
 
 console.log('Hadas started - its UI served at http://localhost:' + port + '/hadas.html');
 		
