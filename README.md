@@ -58,4 +58,4 @@ Uses the following:
 Need to consolidate and confirm compliance with dependencies, prior to publishing.
 
 Screenshot:
-![screenshot](/tree/master/screenshots/hadas.jpg)
+![screenshot](/cloudaloe/hadas/tree/master/screenshots/hadas.jpg)
