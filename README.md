@@ -12,13 +12,14 @@ Code change to your project:		1
 
 ## Setup
 
-1. Download the code
-2. Configure config/config.json to monitor your project 
-3. In your project's client-side code directory, <br/> 
+1. Download the code and locate to it
+2. Install the prerequisite node modules by running: `install.bat`
+3. Configure config/config.json to monitor your project 
+4. In your project's client-side code directory, <br/> 
    copy the following files into /lib:
    `hadasClientListener.js`
    `socket.io.js`
-4. In your project's html, add the following line, after jquery <br/>
+5. In your project's html, add the following line, after jquery <br/>
    `<script type='text/javascript' src='./lib/hadasClientListener.js'></script>` <br/>
    It assumes your html first loads jquery
 
