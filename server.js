@@ -71,13 +71,16 @@ io.sockets.on('connection', function (socket) {
 	socket.emit('watchStatus', watchActive.nodeSide);	
 		
 	socket.on('runNow', function (clientObject) {
+	
+		console.log("Run/recycle request received from UI. Params: " + clientObject.runParams);
+		
 		if (runner) 
 		{ 
-			console.log('Run request received from UI, but the node side is already running') 
+			console.log('about to recycle the node side') 
+			recycleNode();
 		}
 		else
 		{
-			console.log("Run request received from UI. Params: " + clientObject.runParams);
 			spawnPlus();
 		}
 	});
@@ -170,7 +173,7 @@ function changeDetected(event, filename)
 		console.log('fs.watch event: ' + event + ' on file ' + (filename || 'unknown. Probably a watched file has been deleted'));
 		if (watchActive.nodeSide) 
 		{
-			console.log('recycling the node side');	
+			console.log('about to recycle the node side');	
 			recycleNode();
 		}
 		else 

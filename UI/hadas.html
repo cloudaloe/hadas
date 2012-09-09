@@ -12,7 +12,7 @@
   
   <body>
 	<div>Node side status: <strong data-bind="text: agentStatusText"></strong></div>  
-  	<div id=runNow style="visibility: visible;" onClick="runNow()">Run now</div>
+  	<div id=runNow style="visibility: hidden; font-size:0.8em" onClick="runNow()">Run now</div>
 	
 	<div id=watchToggle style="visibility: hidden;">
 		<p style="color:#c1bfb9; margin-bottom:0.5em">auto recycle</p>
@@ -23,8 +23,8 @@
 	</div>
 		
 	<div id="Console">
-		<p style="margin-top:0em">Console output:</p>
-		<div id="ConsoleStdout" style="overflow:auto;" data-bind="text: agentStdout"></div>
+		<p id="ConsoleTitle" style="margin-top:0em">Console output:</p>	
+		<div id="ConsoleStdout" style="height:100%; overflow-y:auto;" data-bind="text: agentStdout"></div>
 	</div>	
 	<!--div id="Console"></div-->
   </body>
@@ -49,6 +49,13 @@
 		// http://stackoverflow.com/questions/590602/padding-or-margin-value-in-pixels-as-integer-using-jquery
 		//
 		$('#Console').height($(document).height() - $('#Console').offset().top - 68);
+		
+		//
+		// arrange the stdout area to consume space down to the end of the containing div, by
+		// calculating how much space is left for it by its preceding sibling <p> element.
+		// this works perfect on all resolutions (Chrome).
+		//
+		$('#ConsoleStdout').height($('#Console').height() - $('#ConsoleTitle').outerHeight(true));
 				
 		function watchToggle()
 		{
@@ -97,6 +104,9 @@
 				//document.getElementById('runNow').style.visibility='visible';							
 				$('#runNow').button( "option" , 'label' , 'Run Now' );				
 			}
+			
+			document.getElementById('runNow').style.visibility='visible';							
+			
 		});
 		
 		socket.on('agentStarted', function () {

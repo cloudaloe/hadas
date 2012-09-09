@@ -13,7 +13,6 @@ body {
 	float: none; 
 }
 
-
 #watchToggle {
 	position: relative;	
 	margin-left: auto;
@@ -23,7 +22,6 @@ body {
 }
 
 #Console {
-	
 	width: 80%;
 	position: relative;	
 	margin-left: auto;
