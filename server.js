@@ -33,7 +33,7 @@ function _tests()
 		console.log('failed opening test output file ' + tests.outPath);
 }
 
-nconf.file({ file: 'config/config.json' });
+//nconf.file({ file: 'config/config.json' });
 
 var projectRoot 	= 	nconf.get('projectRoot');
 var doNotWatchDirs 	= 	nconf.get('doNotWatchDirs');
@@ -55,8 +55,9 @@ var static = require('node-static');
 staticContentServer = new static.Server('./UI', { cache: false });
 
 //
-// Must add thorough error handling here
+// Should add thorough error handling here
 //
+var hostname = nconf.get('server:hostname'); // not used yet
 var port = nconf.get('server:port');
 app.listen(port);
 
@@ -119,7 +120,7 @@ function handler(request, response) {
 			//
 			case '/': 
 				// serves the main html page to the browser
-				request.url += 'clientPage.html';
+				request.url += 'hadas.html';
 				staticContentServer.serve(request, response);
 				break;
 			default:
@@ -136,7 +137,7 @@ function handler(request, response) {
 function spawnPlus()
 {
 	console.log('starting the node side...');
-	runner = spawn('node',[run.server], { cwd: projectRoot});
+	runner = spawn('node',[run.node], { cwd: projectRoot});
 	runner.stdout.on('data', function (data) { io.sockets.emit('agentStdout', String(data)) });	
 	runner.stderr.on('data', function (data) { io.sockets.emit('agentStderr', String(data)) });	
 	io.sockets.emit('agentStatus', true);

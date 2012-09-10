@@ -9,17 +9,19 @@ is running and serving its node console.
 Configuration parameters to set: 	2 - 5 <br/>
 Moving around files:				2 <br/>
 Code change to your project:		1 
+Installation of prerequisite:		1
 
 ## Setup
 
-1. Download the code and locate to it
-2. Install the prerequisite node modules by running: `install.bat`
-3. Configure config/config.json to monitor your project 
-4. In your project's client-side code directory, <br/> 
-   copy the following files into /lib:
+1. Download this repo, extract and locate to it
+2. [Configure](https://github.com/cloudaloe/hadas/wiki/config.json) `config/config.json` to monitor your project 
+3. Make sure you have [node.js] (http://nodejs.org/) installed
+4. Install the prerequisite node modules by running: `install.bat`
+5. In your project's client-side code directory, <br/> 
+   copy the following files into a subdirectory named /lib:
    `hadasClientListener.js`
    `socket.io.js`
-5. In your project's html, add the following line, after jquery <br/>
+6. In your project's html, add the following line, after jquery <br/>
    `<script type='text/javascript' src='./lib/hadasClientListener.js'></script>` <br/>
    It assumes your html first loads jquery
 
@@ -36,7 +38,7 @@ It probably needs some fixing for Unix and non-Chrome.
 ## Welcome contributions
 
 This is a user experience centric tool. <br/>
-Any contribution must maintain a cool UI and configurability coolness <br/>
+Any contribution must maintain or improve a cool UI and configurability coolness <br/>
 Post your ideas in the Wiki or fork / take away pieces.
 
 ## Inspiration and acknowledgements

@@ -1,14 +1,14 @@
 {
 	"projectRoot": "C:\\Github\\chart",
 	"run": {
-		"server": "server.js"
+		"node": "server.js"
 	},
 	"doNotWatchDirs": [
 		".git",
 		"node_modules"
 	],
 	"server": {
-		"host": "localhost",
+		"hostname": "localhost",
 		"port": 1337
   }
 }
