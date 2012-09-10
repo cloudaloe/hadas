@@ -58,4 +58,4 @@ Uses the following:
 
 ## License
 
-Need to consolidate and confirm compliance with dependencies, prior to publishing.
+[Licensed under the MIT License] (http://opensource.org/licenses/mit-license.php).
