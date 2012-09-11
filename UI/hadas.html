@@ -88,7 +88,7 @@
 							  // which is not necessary in this context
 		}
 		
-		var socket = io.connect('http://localhost:1337');
+		var socket = io.connect();
 			
 		socket.on('agentStatus', function (SRVagentStatus) {
 			//alert('got agentStatus message: ' + SRVagentStatus);
