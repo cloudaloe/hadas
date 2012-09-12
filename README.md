@@ -44,7 +44,7 @@ Post your ideas in the Wiki or fork / take away pieces.
 ## Inspiration and acknowledgements
 
 This was inspired by a general disenchantment with how IDE's are designed. <br/>
-I found no existing project doing this, so I made this. Lightly inspired by [Light Table] (http://www.chris-granger.com/2012/04/12/light-table---a-new-ide-concept/). <br/> The code was partly inspired by [Andrew Davey's vogue code] (https://github.com/andrewdavey/vogue). 
+I found no existing project doing this, so I made it. Lightly inspired by [Light Table] (http://www.chris-granger.com/2012/04/12/light-table---a-new-ide-concept/). <br/> The code was partly inspired by [Andrew Davey's vogue code] (https://github.com/andrewdavey/vogue). 
 
 Uses the following:
 * Node.js
