@@ -1,4 +1,4 @@
-# Hadas - the anti-IDE 
+# Hadas - an anti-IDE 
 
 Takes care of your project reloading, once you change your code. Be agile.
 It recycles both the node side and your open browser side, once your project changes (e.g. when you save or move a file).
