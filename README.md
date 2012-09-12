@@ -8,7 +8,7 @@ is running and serving its node console.
 ## Current setup effort summary:
 Configuration parameters to set: 	2 - 5 <br/>
 Moving around files:				2 <br/>
-Code change to your project:		1 
+Code change to your project:		1 <br/>
 Installation of prerequisite:		1
 
 ## Setup
