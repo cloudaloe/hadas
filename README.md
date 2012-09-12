@@ -38,7 +38,7 @@ It probably needs some fixing for Unix and non-Chrome.
 ## Welcome contributions
 
 This is a user experience centric tool. <br/>
-Any contribution should maintain or improve a cool UI and configurability coolness <br/>
+Any contribution should maintain or improve a cool UI and configurability coolness. <br/>
 Post your ideas in the Wiki or fork / take away pieces.
 
 ## Inspiration and acknowledgements
