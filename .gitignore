@@ -2,4 +2,4 @@
 /Jasmine
 /test
 *.out
-web/**/*
+/gh-pages
