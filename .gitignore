@@ -2,3 +2,4 @@
 /Jasmine
 /test
 *.out
+web/**/*
