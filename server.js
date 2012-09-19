@@ -74,7 +74,7 @@ io.sockets.on('connection', function (socket) {
 	socket.on('runNow', function (clientObject) {
 	
 		console.log("Run/recycle request received from UI. Params: " + clientObject.runParams);
-		
+		//console.log('runner ', runner);
 		if (runner) 
 		{ 
 			console.log('about to recycle the node side') 
@@ -91,13 +91,13 @@ io.sockets.on('connection', function (socket) {
 	
 	socket.on('pause', function (clientObject) {
 		console.log('request to pause the recycle watch received from the UI');
-		console.log('pausing the recycle watch.');
+		console.log('pausing the recycle watch');
 		watchActive.nodeSide = false;
 		watchActive.clientSide = false;		
 	});
 	socket.on('resume', function (clientObject) {
 		console.log('request to enable the recycle watch received from the UI');
-		console.log('enabling the recycle watch.');		
+		console.log('enabling the recycle watch');		
 		watchActive.nodeSide = true;		
 		watchActive.clientSide = true;				
 	});
@@ -146,15 +146,26 @@ function spawnPlus()
 	console.log('...started node, pid is ' + runner.pid);
 	runner.on('exit', function(code, signal) {
 		// the kill signal brings us here assuming it caused the spawned process to exit
-		console.log('...node side stopped (pid = ' + this.pid + ', exit code = ' + code, ', signal = ' + signal +')');
-		io.sockets.emit('agentStatus', false);
-		spawnPlus();
+		if (code === null)
+		{
+			console.log('...node side stopped (pid = ' + this.pid + ', exit code = ' + code, ', signal = ' + signal +')');
+			io.sockets.emit('agentStatus', false);			
+			spawnPlus();
+		}
+		else
+		{
+			console.log('...node side terminated with abnormal exit code (pid = ' + this.pid + ', exit code = ' + code, ', signal = ' + signal +')');
+			console.log('due to its abnormal termination, the node side will not be automatically restarted now');
+			io.sockets.emit('agentStatus', false);
+			runner = null;
+		}
 	})
 }
 	
 function recycleNode()
 {
 	console.log('stopping the node side...');	
+	//debugger;
 	if (runner)
 		runner.kill();
 	else
