@@ -1,0 +1,164 @@
+<!doctype html>
+<html ng-app>
+  <head>
+    <script src="/socket.io/socket.io.js"></script>
+	<script type='text/javascript' src='knockout-2.1.0.js'></script>
+	<link type="text/css" rel="stylesheet" href="./css.css">	
+	<link type="text/css" href="jquery/css/custom-theme/jquery-ui-1.8.23.custom.css" rel="stylesheet" />
+	<script type="text/javascript" src="jquery/js/jquery-1.8.0.min.js"></script>
+	<script type="text/javascript" src="jquery/js/jquery-ui-1.8.23.custom.min.js"></script>
+		
+  </head>
+  
+  <body>
+	<div>Application status: <strong data-bind="text: agentStatusText"></strong></div>  
+  	<div id=runNow style="visibility: hidden; font-size:0.8em" onClick="runNow()">Run now</div>
+	
+	<div id=watchToggle style="visibility: hidden;">
+		<p style="color:#c1bfb9; margin-bottom:0.5em">auto recycle</p>
+		<input type="radio" id="watchToggleOn" name="radio" />
+		<label for="watchToggleOn">ON</label>
+		<input type="radio" id="watchToggleOff" name="radio" />
+		<label for="watchToggleOff">OFF</label>
+	</div>
+		
+	<div id="Console">
+		<p id="ConsoleTitle" style="margin-top:0em; text-align:left">Console (and build) output:</p>	
+		<div id="ConsoleStdout" style="height:100%; overflow-y:auto;" data-bind="text: agentStdout"></div>
+	</div>	
+	<!--div id="Console"></div-->
+  </body>
+
+  <script>
+		$('#runNow').button();
+		$('#watchToggle').buttonset();
+
+		var watch;
+		var relayedStdout='';
+		
+		//
+		// the following line roughly makes the height of the console display area such 
+		// that it ends near the bottom of the entire window. In order that it uses
+		// as much real estate as is available without creating a vertical 
+		// window scroll bar
+		//
+		// the calculation is a bit rough (as it doesn't account for the size of the padding 
+		// and margin of its div) but ends up working well on all tested window sizes.
+		// if it's needed to refine more, then one needs to account for sizes of margin,
+		// padding, etc, unless a more direct browser metric is available. Possibly by following from
+		// http://stackoverflow.com/questions/590602/padding-or-margin-value-in-pixels-as-integer-using-jquery
+		//
+		$('#Console').height($(document).height() - $('#Console').offset().top - 68);
+		
+		//
+		// arrange the stdout area to consume space down to the end of the containing div, by
+		// calculating how much space is left for it by its preceding sibling <p> element.
+		// this works perfect on all resolutions (Chrome).
+		//
+		$('#ConsoleStdout').height($('#Console').height() - $('#ConsoleTitle').outerHeight(true));
+				
+		function watchToggle()
+		{
+			switch(this.id)
+			{
+				case "watchToggleOn":
+					socket.emit('resume', { runParams: 'none' });	
+					watch = true;
+					break;
+				case "watchToggleOff":
+					socket.emit('pause', { runParams: 'none' });
+					watch = false;				
+					break;				
+			}
+		}
+		
+		function setWatchToggleButton(watch)
+		{
+			var selected;
+			document.getElementById('watchToggle').style.visibility='visible';
+			document.getElementById('watchToggleOn').onclick=watchToggle;
+			document.getElementById('watchToggleOff').onclick=watchToggle;			
+			
+			if (watch)
+				selected = document.getElementById('watchToggleOn');
+			else
+				selected = document.getElementById('watchToggleOff');			
+			
+			selected.click(); // this has a side effect of sending an event to the server
+							  // which is not necessary in this context
+		}
+		
+		var socket = io.connect();
+			
+		socket.on('agentStatus', function (SRVagentStatus) {
+			//alert('got agentStatus message: ' + SRVagentStatus);
+			if (SRVagentStatus) 
+			{ 
+				myViewModel.agentStatusText('running') 
+				//document.getElementById('runNow').style.visibility='hidden';							
+				$('#runNow').button( "option" , 'label' , 'Recycle Now' );
+			}
+			else 
+			{ 
+				myViewModel.agentStatusText('not running') 
+				//document.getElementById('runNow').style.visibility='visible';							
+				$('#runNow').button( "option" , 'label' , 'Run Now' );				
+			}
+			
+			document.getElementById('runNow').style.visibility='visible';							
+			
+		});
+		
+		socket.on('agentStarted', function () {
+			//relayedStdout += 'application started...\n';			
+		});
+		
+		
+		socket.on('watchStatus', function(status) {
+			setWatchToggleButton(status);
+		});
+		
+		socket.on('agentStdout', function (data) {
+			{ 
+				// append stdout and scroll to bottom of stdout display			
+				relayedStdout += data;
+				myViewModel.agentStdout(relayedStdout) 
+				objDiv = document.getElementById('ConsoleStdout');
+				objDiv.scrollTop = objDiv.scrollHeight;		
+			}
+		});
+		
+		socket.on('agentStderr', function (data) {
+			{ 
+				// append stdout and scroll to bottom of stdout display			
+				relayedStdout += 'Stderr: ' + data;
+				myViewModel.agentStdout(relayedStdout) 
+				objDiv = document.getElementById("ConsoleStdout");
+				objDiv.scrollTop = objDiv.scrollHeight;		
+			}
+		});
+			
+		socket.on('build', function (data) {
+			{ 
+				// append stdout and scroll to bottom of stdout display			
+				relayedStdout += data;
+				myViewModel.agentStdout(relayedStdout) 
+				objDiv = document.getElementById("ConsoleStdout");
+				objDiv.scrollTop = objDiv.scrollHeight;		
+			}
+		});
+				
+		// Create some observables, and bind them to the page (all with knockout.js).
+		var myViewModel = {
+			agentStatusText: ko.observable('getting status...'),
+			agentStdout: ko.observable(relayedStdout)
+		} 
+		ko.applyBindings(myViewModel); 
+						
+		function runNow() { 
+			//myViewModel.agentStatusText('run request sent');
+			socket.emit('runNow', { runParams: 'none' });
+		};
+		
+	</script>
+</html>

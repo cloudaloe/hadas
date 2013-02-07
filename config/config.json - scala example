@@ -1,5 +1,9 @@
 {
 	"projectRoot": "/usr/local/src/pipe/",
+	"build": {
+		"target": "/usr/local/scala/scala-2.10.0/bin/scalac",
+		"targetArgs": "-classpath /usr/local/src/pipe/lib/netty-3.6.0.Final.jar:/usr/local/src/pipe/src /usr/local/src/pipe/src/logger.scala -d /usr/local/src/pipe/bin -feature"
+	},
 	"run": {
 		"target": "/usr/local/scala/scala-2.10.0/bin/scala",
 		"targetArgs": "-classpath bin:lib/netty-3.6.0.Final.jar:. logger"

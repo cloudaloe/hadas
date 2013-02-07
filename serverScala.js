@@ -1,4 +1,16 @@
-//var watch = require('./watch.js');
+//
+// TODO: UI status is not fine-grained as the real status. 
+//		 Only has 'running | not running'. Need also 'Building' (thus 3 states).
+//		 The recycle button shoul also behave according to all 3 states
+// 
+// TODO: Need to differentiate output types. build v.s. app output v.s. fluff
+//		 Through different colors is an option. (Adding colors seems to require
+//		 changing how html is built for the console zone).
+//
+// TODO: Minor regression - file watcher doesn't output name of changed file.
+//		 Very minor.
+//
+
 var argv = require('optimist').argv;
 var configFile = 'config/config.json';
 var fs = require('fs');
@@ -39,6 +51,7 @@ function _tests()
 var projectRoot 	= 	nconf.get('projectRoot');
 var doNotWatchDirs 	= 	nconf.get('doNotWatchDirs');
 var run 			= 	nconf.get('run');	
+var build 			= 	nconf.get('build');	
 	
 if (argv.test) 
 	_tests();
@@ -86,6 +99,7 @@ io.sockets.on('connection', function (socket) {
 			spawnPlus();
 		}
 		
+		// TODO: Probably these next two are a bug and should move to within spawnPlus
 		console.log('recycling the client side');	
 		io.sockets.emit('clientRecycle', true);
 	});
@@ -108,7 +122,7 @@ io.sockets.on('connection', function (socket) {
 	});	
 });
 
-console.log('Hadas started - its UI served at http://localhost:' + port + '/hadas.html');
+console.log('Hadas started - its UI served at http://localhost:' + port + '/hadasScala.html');
 		
 function handler(request, response) {
 	console.log('Received request - method: ' + request.method + ' url: ' + request.url);
@@ -121,7 +135,7 @@ function handler(request, response) {
 			//
 			case '/': 
 				// serves the main html page to the browser
-				request.url += 'hadas.html';
+				request.url += 'hadasScala.html';
 				staticContentServer.serve(request, response);
 				break;
 			default:
@@ -137,30 +151,55 @@ function handler(request, response) {
 
 function spawnPlus()
 {
-	var argsArray = run.targetArgs.split(" ");
-	console.log('starting the application side...');
+	function Go()
+	{
+		var argsArray = run.targetArgs.split(" ");
+		console.log('starting the application side...');
+			
+		runner = spawn(run.target, argsArray, { cwd: projectRoot});
+		runner.stdout.on('data', function (data) { io.sockets.emit('agentStdout', String(data)) });	
+		runner.stderr.on('data', function (data) { io.sockets.emit('agentStderr', String(data)) });	
+		io.sockets.emit('agentStatus', true);
+		io.sockets.emit('agentStarted');	
 		
-	runner = spawn(run.target, argsArray, { cwd: projectRoot});
-	runner.stdout.on('data', function (data) { io.sockets.emit('agentStdout', String(data)) });	
-	runner.stderr.on('data', function (data) { io.sockets.emit('agentStderr', String(data)) });	
-	io.sockets.emit('agentStatus', true);
-	io.sockets.emit('agentStarted');	
-	
-	console.log('...started the application, pid is ' + runner.pid);
-	runner.on('exit', function(code, signal) {
-		// the kill signal brings us here assuming it caused the spawned process to exit
-		if (code == 143)
+		console.log('...started the application, pid is ' + runner.pid);
+		runner.on('exit', function(code, signal) {
+			// the kill signal brings us here assuming it caused the spawned process to exit
+			if (code == 143)
+			{
+				console.log('...application side stopped (pid = ' + this.pid + ', exit code = ' + code, ', signal = ' + signal +')');
+				io.sockets.emit('agentStatus', false);			
+				spawnPlus();
+			}
+			else
+			{
+				console.log('...application side terminated with abnormal exit code (pid = ' + this.pid + ', exit code = ' + code, ', signal = ' + signal +')');
+				console.log('due to its abnormal termination, the application side will not be automatically restarted now');
+				io.sockets.emit('agentStatus', false);
+				runner = null;
+			}
+		})
+	}
+
+	var builder;
+	var buildArgsArray = build.targetArgs.split(" ");
+	// TODO: refactor client to show build messages differently than regular ones (UX)
+	io.sockets.emit('build', '\nBuilding...\n');				
+	console.log('\nBuilding... (build output if any will follow here)');
+	builder = spawn(build.target, buildArgsArray, { cwd: projectRoot});
+	builder.stdout.on('data', function (data) { io.sockets.emit('build', String(data)) });	
+	builder.stderr.on('data', function (data) { io.sockets.emit('build', String(data)) });	
+	builder.on('exit', function(code, signal) {	
+		if (code == 0)
 		{
-			console.log('...application side stopped (pid = ' + this.pid + ', exit code = ' + code, ', signal = ' + signal +')');
-			io.sockets.emit('agentStatus', false);			
-			spawnPlus();
+			io.sockets.emit('build', '...Building done\n\n');			
+			console.log('Building done...\n');
+			Go();
 		}
 		else
 		{
-			console.log('...application side terminated with abnormal exit code (pid = ' + this.pid + ', exit code = ' + code, ', signal = ' + signal +')');
-			console.log('due to its abnormal termination, the application side will not be automatically restarted now');
-			io.sockets.emit('agentStatus', false);
-			runner = null;
+			io.sockets.emit('build', 'Building finished with abnormal return code ' + code);			
+			console.log('Building finished with abnormal return code ' + code);
 		}
 	})
 }
@@ -231,8 +270,8 @@ function watch(directory)
 				if (doNotWatchDirs.indexOf(path.basename(directory)) == -1)
 				{
 					// on a VirtualBox shared drive, fs.watch doesn't work because
-					// VirtualBox doesn't propogate inotify events 
-					// (https://www.virtualbox.org/ticket/10660)
+					// VirtualBox doesn't propogate inotify event
+							// (https://www.virtualbox.org/ticket/10660)
 					fs.watchFile(directory, {persistent: true, interval: 1000}, changeDetected);
 					if (argv.test) 
 						fs.writeSync(tests.watch, 'watching directory: ' + directory + '\n');																
