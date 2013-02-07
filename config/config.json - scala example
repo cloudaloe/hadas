@@ -1,0 +1,16 @@
+{
+	"projectRoot": "/usr/local/src/pipe/",
+	"run": {
+		"target": "/usr/local/scala/scala-2.10.0/bin/scala",
+		"targetArgs": "-classpath bin:lib/netty-3.6.0.Final.jar:. logger"
+	},
+	"doNotWatchDirs": [
+		".git",
+		"node_modules"
+	],
+	"server": {
+		"hostname": "localhost",
+		"port": 1337
+  }
+}
+
