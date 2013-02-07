@@ -230,7 +230,10 @@ function watch(directory)
 				// 
 				if (doNotWatchDirs.indexOf(path.basename(directory)) == -1)
 				{
-					fs.watch(directory, {persistent: true, interval: 100}, changeDetected);
+					// on a VirtualBox shared drive, fs.watch doesn't work because
+					// VirtualBox doesn't propogate inotify events 
+					// (https://www.virtualbox.org/ticket/10660)
+					fs.watchFile(directory, {persistent: true, interval: 1000}, changeDetected);
 					if (argv.test) 
 						fs.writeSync(tests.watch, 'watching directory: ' + directory + '\n');																
 						containedEntities = fs.readdirSync(directory)
