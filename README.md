@@ -8,10 +8,10 @@ An html user interface governs enabling and disabling this automatic recycling, 
 ## Setup effort summary:
 Setting up isn't that hard, but for you being able to assess the effort upfront... here it goes: <br/>
 
-Configuration parameters to set: 	2 - 5 <br/>
-Code change to your project:     1 (to the browser side code, if you have any) <br/>
-Installation of prerequisite:		2 <br/>
-Moving around files:   			   2 
+Installation of prerequisite:   	2 <br/>
+Configuration parameters to set:    2 - 5 <br/>
+Code change to your project:     1 (for your application's browser side code, if you have any) <br/>
+Moving around files:   			   2 (for your application's browser side code, if you have any) <br/>
 
 ## Setup
 
