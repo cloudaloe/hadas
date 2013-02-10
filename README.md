@@ -10,8 +10,8 @@ Setting up isn't that hard, but for you being able to assess the effort upfront.
 
 Installation of prerequisite:   	2 <br/>
 Configuration parameters to set:    2 - 5 <br/>
+Moving around files:      		   2 (for your application's browser side code, if you have any) <br/>
 Code change to your project:     1 (for your application's browser side code, if you have any) <br/>
-Moving around files:   			   2 (for your application's browser side code, if you have any) <br/>
 
 ## Setup
 
@@ -30,7 +30,7 @@ Moving around files:   			   2 (for your application's browser side code, if you
 ## Usage after setup
 
 Start Hadas by locating to the root directory and running: `node server.js` (or on Windows, run `server.bat`) <br/>
-The UI will then become available
+Access the UI by Opening the shown address. 
 
 ## Stability status
 
