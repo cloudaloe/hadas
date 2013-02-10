@@ -1,13 +1,14 @@
 # Hadas - an anti-IDE 
 
 Takes care of your project reloading, once you change your code. Be agile.
-It recycles both the node side and your open browser side, once your project changes (e.g. when you save or move a file).
-An html user interface governs enabling and disabling, as well as showing whether the project 
-is running and serving its node console.
+It recycles both the application server side and any browser windows connected to it, every once your project changes (e.g. when you save or move a file).
+An html user interface governs enabling and disabling this automatic recycling, as well as showing whether your project 
+is running and serving its stdout/err, all in one place. Likewise, it enables you switching between fully automatic mode, and a more manual mode where you recycle your project by the click of a button on it's [user interface]
+(https://github.com/cloudaloe/hadas/blob/master/screenshots/hadas5.png).
 
 ## Current setup effort summary:
 Configuration parameters to set: 	2 - 5 <br/>
-Code change to your project:		1 <br/>
+Code change to your project:     1 (to the browser side code, if you have any) <br/>
 Installation of prerequisite:		2 <br/>
 Moving around files:   			   2 
 
