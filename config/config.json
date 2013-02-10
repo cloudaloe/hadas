@@ -1,7 +1,8 @@
 {
 	"projectRoot": "C:\\Github\\hadas\\test\\project",
 	"run": {
-		"node": "server.js"
+		"target": "node",
+		"targetArgs": "server.js"
 	},
 	"doNotWatchDirs": [
 		".git",
