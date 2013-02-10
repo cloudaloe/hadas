@@ -2,8 +2,9 @@
 
 Takes care of your project reloading, once you change your code. Be agile.
 It recycles both the application server side and any browser windows connected to it, every once your project changes (e.g. when you save or move a file).
-An html user interface governs enabling and disabling this automatic recycling, while also serving its stdout/err all in one place. Likewise, it enables you switching between fully automatic mode, and a more manual mode where you recycle your project by the click of a button on it's [user interface]
+An html user interface governs enabling and disabling this automatic recycling, while also serving its stdout/err all in one place. Likewise, it enables you switching between that fully automatic mode, and a more manual mode where you recycle your project by the click of a button on it's [user interface]
 (https://github.com/cloudaloe/hadas/blob/master/screenshots/hadas5.png).
+Setting up isn't that hard.
 
 ## Current setup effort summary:
 Configuration parameters to set: 	2 - 5 <br/>
