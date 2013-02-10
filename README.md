@@ -32,8 +32,7 @@ The UI will then become available
 
 ## Stability status
 
-This is work in progress. It works 'on my machine'.
-It probably needs some fixing for Unix and non-Chrome.
+This is work in progress. If you run into issues, or wish to have a modification, file an issue on the issues tab.
 
 ## Welcome contributions
 
