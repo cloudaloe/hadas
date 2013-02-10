@@ -29,8 +29,8 @@ Code change to your project:     1 (for your application's browser side code, if
 
 ## Usage after setup
 
-Start Hadas by locating to the root directory and running: `node server.js` (or on Windows, run `server.bat`) <br/>
-Access the UI by Opening the shown address. 
+Start Hadas by locating to the root directory and running: `node server.js` (or on Windows, run `server.bat`), <br/>
+then access the UI by opening the shown address. 
 
 ## Stability status
 
@@ -46,7 +46,7 @@ Post your ideas in the Wiki or fork / take away pieces.
 This was inspired by a general disenchantment with how IDE's are designed. <br/>
 I found no existing project doing this, so I made it. Lightly inspired by [Light Table] (http://www.chris-granger.com/2012/04/12/light-table---a-new-ide-concept/). <br/> The code was partly inspired by [Andrew Davey's vogue code] (https://github.com/andrewdavey/vogue). 
 
-Uses the following:
+Under the hood:
 * Node.js
 * jQuery
 * jQuery UI
